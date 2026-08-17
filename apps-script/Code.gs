@@ -1,9 +1,9 @@
 const CONFIG = {
-  SPREADSHEET_ID: 'YOUR_SPREADSHEET_ID',
+  SPREADSHEET_ID: '12gEnO306O-pbHcAtiihN0xN5tw9H9w_o39uBh4nv9K4',
   SHEETS: {
-    houses: '各樓層房屋價值表',
-    parking: '車位價值表',
-    selections: '選配基本資料',
+    houses: { name: '各樓層房屋價值表', headerRow: 1 },
+    parking: { name: '車位價值表', headerRow: 1 },
+    selections: { name: '選配基本資料', headerRow: 0 },
   },
 };
 
@@ -24,14 +24,15 @@ function doGet(e) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-function readSheet(name) {
+function readSheet(sheetCfg) {
   const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
-  const sheet = ss.getSheetByName(name);
+  const sheet = ss.getSheetByName(sheetCfg.name);
   if (!sheet) return [];
   const values = sheet.getDataRange().getValues();
-  if (values.length < 2) return [];
-  const headers = values[0].map(function (h) { return String(h).trim(); });
-  return values.slice(1).map(function (row) {
+  const hr = sheetCfg.headerRow || 0;
+  if (values.length <= hr) return [];
+  const headers = values[hr].map(function (h) { return String(h).trim(); });
+  return values.slice(hr + 1).map(function (row) {
     var obj = {};
     headers.forEach(function (h, i) { obj[h] = row[i]; });
     return obj;
