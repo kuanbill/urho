@@ -17,6 +17,24 @@ describe('countSelections', () => {
     expect(parkingCounts['B1-2']).toBe(2);
     expect(parkingCounts['B2-16']).toBe(1);
   });
+
+  it('資料形狀防禦：undefined selections 不拋錯並回傳空 counts', () => {
+    const { houseCounts, parkingCounts } = countSelections(undefined, '房屋選配', '車位選配');
+    expect(houseCounts).toEqual({});
+    expect(parkingCounts).toEqual({});
+  });
+
+  it('key 正規化：含前後空白的值與無空白值計為同一 key', () => {
+    const input = [
+      { '房屋選配': ' A1 ', '車位選配': ' B1-1 ' },
+      { '房屋選配': 'A1', '車位選配': 'B1-1' },
+    ];
+    const { houseCounts, parkingCounts } = countSelections(input, '房屋選配', '車位選配');
+    expect(houseCounts['A1']).toBe(2);
+    expect(houseCounts[' A1 ']).toBeUndefined();
+    expect(parkingCounts['B1-1']).toBe(2);
+    expect(parkingCounts[' B1-1 ']).toBeUndefined();
+  });
 });
 
 describe('badgeColor', () => {
