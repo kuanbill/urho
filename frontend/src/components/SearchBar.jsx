@@ -19,7 +19,7 @@ export default function SearchBar({ houses, parking, houseCounts, parkingCounts,
           {houseHits.map((h) => (
             <button key={h['單元編號']} className="search-item" onClick={() => onSelectHouse(h)}>
               <span>{h['樓層']}-{h['戶別']}</span>
-              <SelectionBadge count={houseCounts[h['戶別']] || 0} />
+              <SelectionBadge count={houseCounts[h['單元編號']] || 0} />
             </button>
           ))}
           {parkingHits.map((p) => (

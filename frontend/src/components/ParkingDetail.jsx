@@ -2,7 +2,7 @@ import SelectionBadge from './SelectionBadge.jsx';
 
 const FIELDS = [
   ['車位編號', '車位編號'], ['樓層', '樓層'], ['車位單價/元', '車位單價(元)'],
-  ['車位屬性', '車位屬性'], ['車位大小', '車位大小'], ['規格/公分', '規格(公分)'],
+  ['車位屬性', '車位屬性'], ['車位大小', '車位大小'], ['規格 (公分)', '規格(公分)'],
 ];
 
 export default function ParkingDetail({ parking, count, onBack }) {

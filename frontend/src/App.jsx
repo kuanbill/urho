@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import { countSelections } from './lib/aggregate.js';
-import { SELECTION_HOUSE_FIELD, SELECTION_PARKING_FIELD } from './config.js';
 import SearchBar from './components/SearchBar.jsx';
 import HouseList from './components/HouseList.jsx';
 import HouseDetail from './components/HouseDetail.jsx';
@@ -20,12 +18,15 @@ export default function App({ data: initialData, onRefresh }) {
   const [selectedParking, setSelectedParking] = useState(null);
   const [tab, setTab] = useState('houseList');
   const data = initialData || { houses: [], parking: [], selections: [] };
-  const { houseCounts, parkingCounts } = countSelections(data.selections, SELECTION_HOUSE_FIELD, SELECTION_PARKING_FIELD);
+  const houseCounts = {};
+  (data.houses || []).forEach((h) => { houseCounts[h['單元編號']] = h['選配人數'] || 0; });
+  const parkingCounts = {};
+  (data.parking || []).forEach((p) => { parkingCounts[p['車位編號']] = p['選配人數'] || 0; });
 
   if (selectedHouse) {
     return (
       <main className="app">
-        <HouseDetail house={selectedHouse} count={houseCounts[selectedHouse['戶別']] || 0} onBack={() => setSelectedHouse(null)} />
+        <HouseDetail house={selectedHouse} count={houseCounts[selectedHouse['單元編號']] || 0} onBack={() => setSelectedHouse(null)} />
       </main>
     );
   }
@@ -52,7 +53,7 @@ export default function App({ data: initialData, onRefresh }) {
       </nav>
       {tab === 'houseList' && <HouseList houses={data.houses} houseCounts={houseCounts} onSelect={setSelectedHouse} />}
       {tab === 'parkingList' && <ParkingList parking={data.parking} parkingCounts={parkingCounts} onSelect={setSelectedParking} />}
-      {tab === 'housePlan' && <FloorPlanView rows={data.houses} idField="戶別" labelField="戶別" counts={houseCounts} onSelect={setSelectedHouse} />}
+      {tab === 'housePlan' && <FloorPlanView rows={data.houses} idField="單元編號" labelField="戶別" counts={houseCounts} onSelect={setSelectedHouse} />}
       {tab === 'parkingPlan' && <FloorPlanView rows={data.parking} idField="車位編號" labelField="車位編號" counts={parkingCounts} onSelect={setSelectedParking} />}
     </main>
   );

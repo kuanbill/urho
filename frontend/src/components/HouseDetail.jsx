@@ -2,7 +2,8 @@ import SelectionBadge from './SelectionBadge.jsx';
 
 const FIELDS = [
   ['單元編號', '單元編號'], ['樓層', '樓層'], ['戶別', '戶別'], ['用途', '用途'],
-  ['產權面積/坪', '產權面積(坪)'], ['每坪單價/元', '每坪單價(元)'], ['該戶總價/元', '總價(元)'],
+  ['產權面積(坪)', '產權面積(坪)'], ['每坪單價(元)', '每坪單價(元)'], ['露台總價', '露台總價'],
+  ['該戶總價(元)', '總價(元)'],
 ];
 
 export default function HouseDetail({ house, count, onBack }) {
