@@ -4,6 +4,7 @@ import HouseDetail from './components/HouseDetail.jsx';
 import ParkingList from './components/ParkingList.jsx';
 import ParkingDetail from './components/ParkingDetail.jsx';
 import FloorPlanView from './components/FloorPlanView.jsx';
+import SearchBar from './components/SearchBar.jsx';
 
 const TABS = [
   { key: 'houseList', label: '房屋清單' },
@@ -38,6 +39,7 @@ export default function App({ data }) {
   return (
     <main className="app">
       <h1>都市更新選屋查詢</h1>
+      <SearchBar houses={houses} parking={parking} houseCounts={houseCounts} parkingCounts={parkingCounts} onSelectHouse={setSelectedHouse} onSelectParking={setSelectedParking} />
       <nav className="tabs">
         {TABS.map((t) => (
           <button key={t.key} className={tab === t.key ? 'tab active' : 'tab'} onClick={() => setTab(t.key)}>
