@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import SearchBar from './components/SearchBar.jsx';
 import HouseList from './components/HouseList.jsx';
 import HouseDetail from './components/HouseDetail.jsx';
@@ -26,6 +26,7 @@ export default function App({ data: initialData, onRefresh }) {
   (data.parking || []).forEach((p) => { parkingCounts[p['車位編號']] = p['選配人數'] || 0; });
 
   const touchX = useRef(null);
+  const detailTouchX = useRef(null);
   const onTouchStart = (e) => { touchX.current = e.touches[0].clientX; };
   const onTouchEnd = (e) => {
     if (touchX.current == null) return;
@@ -39,10 +40,40 @@ export default function App({ data: initialData, onRefresh }) {
       return next;
     });
   };
+  const onDetailTouchStart = (e) => { detailTouchX.current = e.touches[0].clientX; };
+  const onDetailTouchEnd = (e) => {
+    if (detailTouchX.current == null) return;
+    const startX = detailTouchX.current;
+    const dx = e.changedTouches[0].clientX - startX;
+    detailTouchX.current = null;
+    if (startX < 40 && dx > 60) goBack();
+  };
+  const goBack = () => {
+    if (selectedHouse || selectedParking) history.back();
+    else {
+      setSelectedHouse(null);
+      setSelectedParking(null);
+    }
+  };
   const goTo = (i) => {
     setDirection(i > tab ? 1 : -1);
     setTab(i);
+    setSelectedHouse(null);
+    setSelectedParking(null);
   };
+
+  useEffect(() => {
+    const onPop = () => {
+      setSelectedHouse(null);
+      setSelectedParking(null);
+    };
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, []);
+
+  useEffect(() => {
+    if (selectedHouse || selectedParking) history.pushState({ detail: true }, '');
+  }, [selectedHouse, selectedParking]);
 
   let content;
   let title = TABS[tab].label;
@@ -50,11 +81,11 @@ export default function App({ data: initialData, onRefresh }) {
   if (selectedHouse) {
     isDetail = true;
     title = `${selectedHouse['樓層']}-${selectedHouse['戶別']}`;
-    content = <HouseDetail house={selectedHouse} count={houseCounts[selectedHouse['單元編號']] || 0} onBack={() => setSelectedHouse(null)} />;
+    content = <HouseDetail house={selectedHouse} count={houseCounts[selectedHouse['單元編號']] || 0} />;
   } else if (selectedParking) {
     isDetail = true;
     title = selectedParking['車位編號'];
-    content = <ParkingDetail parking={selectedParking} count={parkingCounts[selectedParking['車位編號']] || 0} onBack={() => setSelectedParking(null)} />;
+    content = <ParkingDetail parking={selectedParking} count={parkingCounts[selectedParking['車位編號']] || 0} />;
   } else if (tab === 0) content = <HouseList houses={data.houses} houseCounts={houseCounts} onSelect={setSelectedHouse} />;
   else if (tab === 1) content = <ParkingList parking={data.parking} parkingCounts={parkingCounts} onSelect={setSelectedParking} />;
   else if (tab === 2) content = <FloorPlanView rows={data.houses} idField="單元編號" labelField="戶別" counts={houseCounts} sortField="排序" onSelect={setSelectedHouse} />;
@@ -64,6 +95,7 @@ export default function App({ data: initialData, onRefresh }) {
     <main className="app">
       <div className="topbar">
         <div className="topbar-title">
+          {isDetail && <button className="topbar-back" onClick={goBack} aria-label="返回">←</button>}
           <img src={`${import.meta.env.BASE_URL}icon.png`} className="topbar-icon" alt="" />
           <h1 className="location">{title}</h1>
         </div>
@@ -72,8 +104,8 @@ export default function App({ data: initialData, onRefresh }) {
       {!isDetail && <SearchBar houses={data.houses} parking={data.parking} houseCounts={houseCounts} parkingCounts={parkingCounts} onSelectHouse={setSelectedHouse} onSelectParking={setSelectedParking} />}
       <div
         className="content"
-        onTouchStart={isDetail ? undefined : onTouchStart}
-        onTouchEnd={isDetail ? undefined : onTouchEnd}
+        onTouchStart={isDetail ? onDetailTouchStart : onTouchStart}
+        onTouchEnd={isDetail ? onDetailTouchEnd : onTouchEnd}
       >
         <div className="slide" key={isDetail ? `d-${title}` : tab} data-dir={direction}>
           {content}

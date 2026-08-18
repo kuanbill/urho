@@ -6,10 +6,9 @@ const FIELDS = [
   ['該戶總價(元)', '總價(元)'],
 ];
 
-export default function HouseDetail({ house, count, onBack }) {
+export default function HouseDetail({ house, count }) {
   return (
     <section className="detail">
-      <button className="back" onClick={onBack}>← 返回</button>
       <h2>{house['樓層']}-{house['戶別']}</h2>
       <SelectionBadge count={count} />
       <dl className="detail-list">
