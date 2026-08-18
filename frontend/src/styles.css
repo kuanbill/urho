@@ -1,9 +1,10 @@
 * { box-sizing: border-box; }
 body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", "Microsoft JhengHei", sans-serif; background: #f5f6f8; color: #1f2328; }
-.app { max-width: 640px; margin: 0 auto; padding: 16px 16px 84px; }
+.app { max-width: 640px; margin: 0 auto; padding: 0 16px 84px; }
 h1 { font-size: 20px; }
-.topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.location { font-size: 20px; margin: 0; }
+.topbar { position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; background: #2563eb; color: #fff; margin: 0 -16px 12px; padding: 14px 16px; }
+.location { font-size: 20px; margin: 0; color: #fff; }
+.topbar .refresh { border: none; background: #fff; color: #2563eb; padding: 8px 14px; border-radius: 999px; font-size: 14px; cursor: pointer; }
 .content { min-height: 60vh; }
 .slide { animation: slideIn .22s ease; }
 .slide[data-dir="-1"] { animation-name: slideInR; }
