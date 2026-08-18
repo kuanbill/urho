@@ -44,23 +44,18 @@ export default function App({ data: initialData, onRefresh }) {
     setTab(i);
   };
 
-  if (selectedHouse) {
-    return (
-      <main className="app">
-        <HouseDetail house={selectedHouse} count={houseCounts[selectedHouse['單元編號']] || 0} onBack={() => setSelectedHouse(null)} />
-      </main>
-    );
-  }
-  if (selectedParking) {
-    return (
-      <main className="app">
-        <ParkingDetail parking={selectedParking} count={parkingCounts[selectedParking['車位編號']] || 0} onBack={() => setSelectedParking(null)} />
-      </main>
-    );
-  }
-
   let content;
-  if (tab === 0) content = <HouseList houses={data.houses} houseCounts={houseCounts} onSelect={setSelectedHouse} />;
+  let title = TABS[tab].label;
+  let isDetail = false;
+  if (selectedHouse) {
+    isDetail = true;
+    title = `${selectedHouse['樓層']}-${selectedHouse['戶別']}`;
+    content = <HouseDetail house={selectedHouse} count={houseCounts[selectedHouse['單元編號']] || 0} onBack={() => setSelectedHouse(null)} />;
+  } else if (selectedParking) {
+    isDetail = true;
+    title = selectedParking['車位編號'];
+    content = <ParkingDetail parking={selectedParking} count={parkingCounts[selectedParking['車位編號']] || 0} onBack={() => setSelectedParking(null)} />;
+  } else if (tab === 0) content = <HouseList houses={data.houses} houseCounts={houseCounts} onSelect={setSelectedHouse} />;
   else if (tab === 1) content = <ParkingList parking={data.parking} parkingCounts={parkingCounts} onSelect={setSelectedParking} />;
   else if (tab === 2) content = <FloorPlanView rows={data.houses} idField="單元編號" labelField="戶別" counts={houseCounts} sortField="排序" onSelect={setSelectedHouse} />;
   else content = <FloorPlanView rows={data.parking} idField="車位編號" labelField="車位編號" counts={parkingCounts} onSelect={setSelectedParking} />;
@@ -68,16 +63,16 @@ export default function App({ data: initialData, onRefresh }) {
   return (
     <main className="app">
       <div className="topbar">
-        <h1 className="location">{TABS[tab].label}</h1>
+        <h1 className="location">{title}</h1>
         <button className="refresh" onClick={onRefresh}>刷新</button>
       </div>
-      <SearchBar houses={data.houses} parking={data.parking} houseCounts={houseCounts} parkingCounts={parkingCounts} onSelectHouse={setSelectedHouse} onSelectParking={setSelectedParking} />
+      {!isDetail && <SearchBar houses={data.houses} parking={data.parking} houseCounts={houseCounts} parkingCounts={parkingCounts} onSelectHouse={setSelectedHouse} onSelectParking={setSelectedParking} />}
       <div
         className="content"
-        onTouchStart={onTouchStart}
-        onTouchEnd={onTouchEnd}
+        onTouchStart={isDetail ? undefined : onTouchStart}
+        onTouchEnd={isDetail ? undefined : onTouchEnd}
       >
-        <div className="slide" key={tab} data-dir={direction}>
+        <div className="slide" key={isDetail ? `d-${title}` : tab} data-dir={direction}>
           {content}
         </div>
       </div>
