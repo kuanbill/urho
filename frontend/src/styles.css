@@ -1,7 +1,18 @@
 * { box-sizing: border-box; }
 body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", "Microsoft JhengHei", sans-serif; background: #f5f6f8; color: #1f2328; }
-.app { max-width: 640px; margin: 0 auto; padding: 16px; }
+.app { max-width: 640px; margin: 0 auto; padding: 16px 16px 84px; }
 h1 { font-size: 20px; }
+.topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.location { font-size: 20px; margin: 0; }
+.content { min-height: 60vh; }
+.slide { animation: slideIn .22s ease; }
+.slide[data-dir="-1"] { animation-name: slideInR; }
+@keyframes slideIn { from { transform: translateX(6%); opacity: .5; } to { transform: translateX(0); opacity: 1; } }
+@keyframes slideInR { from { transform: translateX(-6%); opacity: .5; } to { transform: translateX(0); opacity: 1; } }
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 640px; margin: 0 auto; background: #fff; border-top: 1px solid #e5e7eb; display: flex; z-index: 10; }
+.bn-item { flex: 1; border: none; background: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 9px 0 11px; font-size: 11px; color: #6b7280; cursor: pointer; }
+.bn-item.active { color: #2563eb; }
+.bn-label { font-size: 11px; }
 .card-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
 .card { display: flex; justify-content: space-between; align-items: center; background: #fff; border-radius: 12px; padding: 14px; box-shadow: 0 1px 3px rgba(0,0,0,.08); cursor: pointer; }
 .card-title { font-size: 17px; font-weight: 700; }
@@ -28,9 +39,6 @@ h1 { font-size: 20px; }
 .fp-cell.fp-red { background: #fee2e2; }
 .fp-id { display: block; font-size: 14px; font-weight: 600; }
 .fp-count { display: block; font-size: 18px; font-weight: 800; margin-top: 4px; }
-.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 16px; }
-.tab { border: none; background: #fff; padding: 8px 14px; border-radius: 999px; font-size: 14px; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
-.tab.active { background: #2563eb; color: #fff; }
 .search { margin-bottom: 16px; }
 .search-input { width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid #d1d5db; font-size: 16px; }
 .search-results { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }

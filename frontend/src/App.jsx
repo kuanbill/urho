@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import SearchBar from './components/SearchBar.jsx';
 import HouseList from './components/HouseList.jsx';
 import HouseDetail from './components/HouseDetail.jsx';
 import ParkingList from './components/ParkingList.jsx';
 import ParkingDetail from './components/ParkingDetail.jsx';
 import FloorPlanView from './components/FloorPlanView.jsx';
+import BottomNav from './components/BottomNav.jsx';
 
 const TABS = [
   { key: 'houseList', label: '房屋清單' },
@@ -14,14 +15,34 @@ const TABS = [
 ];
 
 export default function App({ data: initialData, onRefresh }) {
+  const [tab, setTab] = useState(0);
+  const [direction, setDirection] = useState(1);
   const [selectedHouse, setSelectedHouse] = useState(null);
   const [selectedParking, setSelectedParking] = useState(null);
-  const [tab, setTab] = useState('houseList');
   const data = initialData || { houses: [], parking: [], selections: [] };
   const houseCounts = {};
   (data.houses || []).forEach((h) => { houseCounts[h['單元編號']] = h['選配人數'] || 0; });
   const parkingCounts = {};
   (data.parking || []).forEach((p) => { parkingCounts[p['車位編號']] = p['選配人數'] || 0; });
+
+  const touchX = useRef(null);
+  const onTouchStart = (e) => { touchX.current = e.touches[0].clientX; };
+  const onTouchEnd = (e) => {
+    if (touchX.current == null) return;
+    const dx = e.changedTouches[0].clientX - touchX.current;
+    touchX.current = null;
+    if (Math.abs(dx) < 60) return;
+    const dir = dx < 0 ? 1 : -1;
+    setTab((t) => {
+      const next = Math.min(TABS.length - 1, Math.max(0, t + dir));
+      if (next !== t) setDirection(dir);
+      return next;
+    });
+  };
+  const goTo = (i) => {
+    setDirection(i > tab ? 1 : -1);
+    setTab(i);
+  };
 
   if (selectedHouse) {
     return (
@@ -37,24 +58,30 @@ export default function App({ data: initialData, onRefresh }) {
       </main>
     );
   }
+
+  let content;
+  if (tab === 0) content = <HouseList houses={data.houses} houseCounts={houseCounts} onSelect={setSelectedHouse} />;
+  else if (tab === 1) content = <ParkingList parking={data.parking} parkingCounts={parkingCounts} onSelect={setSelectedParking} />;
+  else if (tab === 2) content = <FloorPlanView rows={data.houses} idField="單元編號" labelField="戶別" counts={houseCounts} sortField="排序" onSelect={setSelectedHouse} />;
+  else content = <FloorPlanView rows={data.parking} idField="車位編號" labelField="車位編號" counts={parkingCounts} onSelect={setSelectedParking} />;
+
   return (
     <main className="app">
-      <div className="header">
-        <h1>都市更新選屋查詢</h1>
+      <div className="topbar">
+        <h1 className="location">{TABS[tab].label}</h1>
         <button className="refresh" onClick={onRefresh}>刷新</button>
       </div>
       <SearchBar houses={data.houses} parking={data.parking} houseCounts={houseCounts} parkingCounts={parkingCounts} onSelectHouse={setSelectedHouse} onSelectParking={setSelectedParking} />
-      <nav className="tabs">
-        {TABS.map((t) => (
-          <button key={t.key} className={tab === t.key ? 'tab active' : 'tab'} onClick={() => setTab(t.key)}>
-            {t.label}
-          </button>
-        ))}
-      </nav>
-      {tab === 'houseList' && <HouseList houses={data.houses} houseCounts={houseCounts} onSelect={setSelectedHouse} />}
-      {tab === 'parkingList' && <ParkingList parking={data.parking} parkingCounts={parkingCounts} onSelect={setSelectedParking} />}
-      {tab === 'housePlan' && <FloorPlanView rows={data.houses} idField="單元編號" labelField="戶別" counts={houseCounts} sortField="排序" onSelect={setSelectedHouse} />}
-      {tab === 'parkingPlan' && <FloorPlanView rows={data.parking} idField="車位編號" labelField="車位編號" counts={parkingCounts} onSelect={setSelectedParking} />}
+      <div
+        className="content"
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
+        <div className="slide" key={tab} data-dir={direction}>
+          {content}
+        </div>
+      </div>
+      <BottomNav tabs={TABS} active={tab} onSelect={goTo} />
     </main>
   );
 }
