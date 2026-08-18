@@ -10,3 +10,20 @@ export function buildGrid(rows, idField, counts) {
   }
   return grid;
 }
+
+export function sortFloorsByField(grid, sortField) {
+  return [...grid.keys()].sort((a, b) => {
+    const va = minField(grid.get(a), sortField);
+    const vb = minField(grid.get(b), sortField);
+    return va - vb;
+  });
+}
+
+function minField(units, sortField) {
+  let min = Infinity;
+  for (const cell of units.values()) {
+    const v = Number(cell[sortField]);
+    if (!Number.isNaN(v) && v < min) min = v;
+  }
+  return min;
+}

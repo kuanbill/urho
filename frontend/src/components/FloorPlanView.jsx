@@ -1,9 +1,9 @@
-import { buildGrid } from '../lib/floorplan.js';
+import { buildGrid, sortFloorsByField } from '../lib/floorplan.js';
 import { badgeColor } from '../lib/aggregate.js';
 
-export default function FloorPlanView({ rows, idField, counts, labelField, onSelect }) {
+export default function FloorPlanView({ rows, idField, counts, labelField, onSelect, sortField }) {
   const grid = buildGrid(rows, idField, counts);
-  const floors = [...grid.keys()].sort();
+  const floors = sortField ? sortFloorsByField(grid, sortField) : [...grid.keys()].sort();
   return (
     <div className="floorplan">
       {floors.map((floor) => (

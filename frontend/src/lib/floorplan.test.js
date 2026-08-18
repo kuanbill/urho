@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildGrid } from './floorplan.js';
+import { buildGrid, sortFloorsByField } from './floorplan.js';
 
 const houses = [
   { '樓層': '1F', '戶別': 'A1', '該戶總價(元)': 1000 },
@@ -17,5 +17,17 @@ describe('buildGrid', () => {
     expect(floor1.get('A2').count).toBe(0);
     expect(floor1.get('A1')['該戶總價(元)']).toBe(1000);
     expect(grid.get('2F').get('A1').count).toBe(2);
+  });
+
+  it('依「排序」欄位的最小值決定樓層順序', () => {
+    const rows = [
+      { '樓層': '10F', '戶別': 'A1', '排序': 30 },
+      { '樓層': '10F', '戶別': 'A2', '排序': 31 },
+      { '樓層': '2F', '戶別': 'A1', '排序': 10 },
+      { '樓層': '1F', '戶別': 'A1', '排序': 1 },
+      { '樓層': '1F', '戶別': 'A2', '排序': 2 },
+    ];
+    const grid = buildGrid(rows, '戶別', {});
+    expect(sortFloorsByField(grid, '排序')).toEqual(['1F', '2F', '10F']);
   });
 });

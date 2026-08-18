@@ -53,7 +53,7 @@ export default function App({ data: initialData, onRefresh }) {
       </nav>
       {tab === 'houseList' && <HouseList houses={data.houses} houseCounts={houseCounts} onSelect={setSelectedHouse} />}
       {tab === 'parkingList' && <ParkingList parking={data.parking} parkingCounts={parkingCounts} onSelect={setSelectedParking} />}
-      {tab === 'housePlan' && <FloorPlanView rows={data.houses} idField="單元編號" labelField="戶別" counts={houseCounts} onSelect={setSelectedHouse} />}
+      {tab === 'housePlan' && <FloorPlanView rows={data.houses} idField="單元編號" labelField="戶別" counts={houseCounts} sortField="排序" onSelect={setSelectedHouse} />}
       {tab === 'parkingPlan' && <FloorPlanView rows={data.parking} idField="車位編號" labelField="車位編號" counts={parkingCounts} onSelect={setSelectedParking} />}
     </main>
   );
