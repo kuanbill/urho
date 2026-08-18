@@ -64,7 +64,7 @@ export default function App({ data: initialData, onRefresh }) {
     <main className="app">
       <div className="topbar">
         <div className="topbar-title">
-          <img src="/icon.png" className="topbar-icon" alt="" />
+          <img src={`${import.meta.env.BASE_URL}icon.png`} className="topbar-icon" alt="" />
           <h1 className="location">{title}</h1>
         </div>
         <button className="refresh" onClick={onRefresh}>刷新</button>
