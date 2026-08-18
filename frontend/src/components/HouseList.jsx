@@ -1,4 +1,5 @@
 import SelectionBadge from './SelectionBadge.jsx';
+import { formatAmount } from '../lib/format.js';
 
 export default function HouseList({ houses, houseCounts, onSelect }) {
   if (!houses.length) return <p className="empty">尚無房屋資料</p>;
@@ -14,7 +15,7 @@ export default function HouseList({ houses, houseCounts, onSelect }) {
               <span className="card-sub">{h['用途'] || ''} · {h['產權面積(坪)']} 坪</span>
             </div>
             <div className="card-side">
-              <span className="card-price">{h['該戶總價(元)']} 元</span>
+              <span className="card-price">{formatAmount(h['該戶總價(元)'])} 元</span>
               <SelectionBadge count={count} />
             </div>
           </li>

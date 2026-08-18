@@ -1,4 +1,5 @@
 import SelectionBadge from './SelectionBadge.jsx';
+import { formatAmount } from '../lib/format.js';
 
 export default function ParkingList({ parking, parkingCounts, onSelect }) {
   if (!parking.length) return <p className="empty">尚無車位資料</p>;
@@ -14,7 +15,7 @@ export default function ParkingList({ parking, parkingCounts, onSelect }) {
               <span className="card-sub">{p['車位屬性'] || ''} · {p['車位大小'] || ''}</span>
             </div>
             <div className="card-side">
-              <span className="card-price">{p['車位單價/元']} 元</span>
+              <span className="card-price">{formatAmount(p['車位單價/元'])} 元</span>
               <SelectionBadge count={count} />
             </div>
           </li>
