@@ -9,7 +9,7 @@ export default function ParkingDetail({ parking, count, onBack }) {
   return (
     <section className="detail">
       <button className="back" onClick={onBack}>← 返回</button>
-      <h2>{parking['樓層']}-{parking['車位編號']}</h2>
+      <h2>{parking['車位編號']}</h2>
       <SelectionBadge count={count} />
       <dl className="detail-list">
         {FIELDS.map(([key, label]) => (

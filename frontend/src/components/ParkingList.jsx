@@ -10,7 +10,7 @@ export default function ParkingList({ parking, parkingCounts, onSelect }) {
         return (
           <li key={id ?? i} className="card" onClick={() => onSelect(p)}>
             <div className="card-main">
-              <span className="card-title">{p['樓層']}-{id}</span>
+              <span className="card-title">{id}</span>
               <span className="card-sub">{p['車位屬性'] || ''} · {p['車位大小'] || ''}</span>
             </div>
             <div className="card-side">
