@@ -63,7 +63,10 @@ export default function App({ data: initialData, onRefresh }) {
   return (
     <main className="app">
       <div className="topbar">
-        <h1 className="location">{title}</h1>
+        <div className="topbar-title">
+          <img src="/icon.png" className="topbar-icon" alt="" />
+          <h1 className="location">{title}</h1>
+        </div>
         <button className="refresh" onClick={onRefresh}>刷新</button>
       </div>
       {!isDetail && <SearchBar houses={data.houses} parking={data.parking} houseCounts={houseCounts} parkingCounts={parkingCounts} onSelectHouse={setSelectedHouse} onSelectParking={setSelectedParking} />}
