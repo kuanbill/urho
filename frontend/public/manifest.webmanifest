@@ -1,7 +1,8 @@
 {
   "name": "都市更新選屋查詢",
   "short_name": "選屋查詢",
-  "start_url": "/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#2563eb",
   "theme_color": "#2563eb",
